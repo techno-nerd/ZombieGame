@@ -14,15 +14,26 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     public static final int UPDATE_FREQ = 16;
     public static final int GAME_SCREEN_WIDTH = 800;
     public static final int GAME_SCREEN_HEIGHT = 600;
-    public static final double PISTOL_FIRERATE = 100;
+
+    public static final double PISTOL_FIRERATE = 200;
+    public static final double SHOTGUN_FIRERATE = 160;
+    public static final double AK47_FIRERATE = 100;
+    public static final double MACHINE_GUN_FIRERATE = 50;
+    
     public static final int ZOMBIE_TOLERANCE = 5;
     public static final int NUM_ZOMBIES = 5;
+    /*
+     * The chance of the zombie adjusting it's angle every time the game is updated
+     */
+    public static final double ADJUST_ANGLE_PROBA = 0.01;
+
 
     private Player player;
     private ArrayList<Zombie> zombies;
     private ArrayList<Bullet> bullets;
     private long timeSinceUpdate;
     private GameState gameState;
+    private ArrayList<Integer> keysPressed = new ArrayList<Integer>();
 
     public ZombieSurvivalGame() {
         zombies = new ArrayList<Zombie>();
@@ -35,34 +46,75 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     }
     
     public void startGame() {
-       
         while (true) {
             if(System.currentTimeMillis() - timeSinceUpdate >= UPDATE_FREQ) {
-                int result = updateGame();
-                if(result == -1) {
-                    break;
+                switch(gameState) {
+                    case Welcome: {
+                        repaint();
+                        try {
+                            Thread.sleep(2000);
+                        } 
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        gameState = GameState.Playing;
+                        break;
+                    }
+
+                    case Playing: {
+                        repaint();
+                        int result = updateGame();
+                        if(result == -1) {
+                            gameState = GameState.Ended;
+                        }
+                        else {
+                            player.updateScore(result);
+                        }
+                        break;
+                    }
+
+                    case Ended: {
+                        repaint();
+                        break;
+                    }
                 }
-                else {
-                    player.updateScore(result);
-                }
-                repaint();
+
                 timeSinceUpdate = System.currentTimeMillis();
+        
             }
-
-            if(zombies.size() < NUM_ZOMBIES) {
-                zombies.add(new Zombie(GAME_SCREEN_WIDTH, (int) (GAME_SCREEN_HEIGHT*0.2)));
-            }
-            
         }
-
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
-        g2D.drawString(""+player.getScore(), GAME_SCREEN_WIDTH-50, 50);
-        drawSprites(g2D);
+        switch (gameState) {
+            case Welcome: {
+                drawWelcome(g2D);
+                break;
+            }
+                
+            case Playing: {
+                g2D.drawString(""+player.getScore(), GAME_SCREEN_WIDTH-50, 50);
+                drawSprites(g2D);
+                break;
+            }
+
+            case Ended: {
+                drawEnd(g2D);
+                break;
+            }
+        
+        }
+        
+    }
+
+    private void drawWelcome(Graphics2D g2d) {
+        g2d.drawString("Welcome! You will be shooting some zombies today", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 - 50);
+        g2d.drawString("Space to shoot, Arrow Keys to navigate and E to switch the gun from left to right hand", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2);
+        g2d.drawString("Your gun will upgrade as you score points. Check the README file for details", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 + 50);
+
     }
 
     private void drawSprites(Graphics2D g2D) {
@@ -77,34 +129,115 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         }
     }
 
+    private void drawEnd(Graphics2D g2d) {
+        g2d.setFont(new Font("Monospaced", Font.PLAIN, 64));
+        g2d.setColor(Color.RED);
+        g2d.drawString("You died!", GAME_SCREEN_WIDTH/2 - 300, GAME_SCREEN_HEIGHT/2 - 50);
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(String.format("Your score: %d", player.getScore()), GAME_SCREEN_WIDTH/2 - 300, GAME_SCREEN_HEIGHT/2 + 50);
+    }
+
     /**
-     * Updates the zombies and bullets
+     * Handles key presses and updates the zombies and bullets
      * @return -1 if zombie is touching player | Else, it returns the score
      */
     private int updateGame() {
-        int score = 0;
+        handleKeys();
+
+        int zResult = handleZombies();
+        if(zResult == -1) {
+            return -1;
+        }
         
+        return handleBullets();
+
+    }
+
+    public boolean checkBulletHit(Bullet bullet, ArrayList<Zombie> zombies) {
+        Rectangle bulletRect = bullet.getRect();
+        for(int i=0; i<zombies.size(); i++) {
+            Zombie zombie = zombies.get(i);
+            if(bulletRect.getBounds().intersects(zombie.getRect(true))) {
+                zombies.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void handleKeys() {
+        for(int i=0; i<keysPressed.size(); i++) {
+            int keyCode = keysPressed.get(i);
+            if (keyCode == KeyEvent.VK_LEFT) {
+                if(player.getX() > 0) {
+                    player.move(-1);
+                }
+            } 
+            
+            if (keyCode == KeyEvent.VK_RIGHT) {
+                if(player.getX() < GAME_SCREEN_WIDTH-player.getWidth()) {
+                    player.move(1);
+                }
+            } 
+            
+            if (keyCode == KeyEvent.VK_SPACE) {
+                Bullet bullet = player.shoot();
+                if(bullet != null) {
+                    bullets.add(bullet);
+                }
+            }
+    
+            if(keyCode == KeyEvent.VK_E) {
+                player.switchHands();
+            }
+
+        }
+    }
+
+    /**
+     * Adds, moves, removes and checks for contact with player.  
+     * @return -1 if touching player | 0 otherwise
+     */
+    private int handleZombies() {
+        //Adds zombies
+        if(zombies.size() < NUM_ZOMBIES) {
+            zombies.add(new Zombie(GAME_SCREEN_WIDTH, (int) (GAME_SCREEN_HEIGHT*0.2), player.getX(), player.getY()));
+        }
+
         //Handles zombies and checks if zombie is touching player
         int z = 0;
         while(z < zombies.size()) {
             Zombie zombie = zombies.get(z);
 
-            Rectangle zombieRect = zombie.getRect();
+            //Checks if zombie is touching player
+            Rectangle zombieRect = zombie.getRect(false);
             if(zombieRect.getBounds().intersects(player.getRect())) {
                 return -1;
             }
 
+            //Moves zombies with valid positions
             if(zombie.validatePosition(GAME_SCREEN_HEIGHT)) {
-                //zombie.move(player.getX(), player.getY());
+                if(Math.random() < ADJUST_ANGLE_PROBA) {
+                    zombie.updateAngle(player.getX(), player.getY());
+                }
                 zombie.move();
                 z++;
             }
+            //Deletes zombies that are off the screen
             else {
                 zombies.remove(z);
             }
             
         }
+        return 0;
+    }
 
+    /**
+     * Moves, removes and checks if bullet is touching zombie
+     * @return score
+     */
+    private int handleBullets() {
+        int score = 0;
         //If the bullet is touching a zombie, 
         int b=0;
         while(b<bullets.size()) {
@@ -125,47 +258,35 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
                 bullets.remove(b);
             }
         }
-        
+
         return score;
-
-    }
-
-    public boolean checkBulletHit(Bullet bullet, ArrayList<Zombie> zombies) {
-        Rectangle bulletRect = bullet.getRect();
-        for(int i=0; i<zombies.size(); i++) {
-            Zombie zombie = zombies.get(i);
-            if(bulletRect.getBounds().intersects(zombie.getRect())) {
-                zombies.remove(i);
-                return true;
-            }
-        }
-        return false;
     }
 
 
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_LEFT) {
-            if(player.getX() > 0) {
-                player.move(-1);
-            }
-        } else if (keyCode == KeyEvent.VK_RIGHT) {
-            if(player.getX() < GAME_SCREEN_WIDTH-player.getWidth()) {
-                player.move(1);
-            }
-        } else if (keyCode == KeyEvent.VK_SPACE) {
-            Bullet bullet = player.shoot();
-            if(bullet != null) {
-                bullets.add(bullet);
-            }
+        if(keysPressed.contains(keyCode)) {
+            return;
         }
+        keysPressed.add(keyCode);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {}
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+        int keycode = e.getKeyCode();
+        int i = 0;
+        while(i < keysPressed.size()) {
+            if(keysPressed.get(i) == keycode) {
+                keysPressed.remove(i);
+            }
+            else {
+                i++;
+            }   
+        }
+    }
 
 }

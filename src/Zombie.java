@@ -1,55 +1,94 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 
 public class Zombie extends Sprite {
-    private int speed;
+    private double speed;
+
+    /**
+     * Direction in which the zombie is moving
+     */
+    private double angle;
+    private BufferedImage image;
 
     public Zombie(int width, int height) {
         this.x = (int)(Math.random()*width);
         this.y = height;
-        this.width = 50;
+        this.width = 25;
         this.height = 50;
-        speed = 1;
+        speed = 0.75;
+        
+        try {
+            image = ImageIO.read(new File("media/Zombie.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Zombie(int width, int height, double playerX, double playerY) {
+        this(width, height);
+        calcAngle(playerX, playerY);
     }
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.GREEN);
-        g.fillOval(x, y, width, height);
+        g.drawImage(image, (int)x, (int)y, width, height, null);
     }
 
-    /**
-     * @param x x coordinate towards which it moves
-     * @param y y coordinate towards which it moves
-     * 
-     * Moves `speed` distance towards given coordinates
-     */
-    public void move(int x, int y) {
-        try {
-            double angle = Math.atan((double)((x-this.x)/(y-this.y)));
-            this.x += (Math.sin(angle)*speed);
-            this.y += (Math.cos(angle)*speed);
-        }
-
-        catch(Exception e) {
-            System.out.println("Touching player");
-        }
-        
-    }
 
     public void move() {
-        y += speed;
+        if(Double.isNaN(angle)) {
+            y += speed;
+        }
+        else if (angle < 0) {
+            this.x -= (Math.cos(angle)*speed); //Since cos(-ve) is positive, and the zombie actually needs to move left
+            this.y -= (Math.sin(angle)*speed); //Since sin(-ve) is negative, and the zombie actually needs to move downward
+        }
+        else {
+            this.x += (Math.cos(angle)*speed);
+            this.y += (Math.sin(angle)*speed);
+        }
     }
 
     public boolean validatePosition(int screenHeight) {
         return (this.y < screenHeight);
     }
+    
     /**
-     * 
+     * @param real Whether the <code>ZombieSurvivalGame.ZOMBIE_TOLERANCE</code> should be subtracted or not. <code>true</code> means not subtracted, <code>false</code> means subtracted 
      * @return Rectangle object with slightly smaller width and height (defined in <code>Constants.ZOMBIE_TOLERANCE</code>)
      */
-    public Rectangle getRect() {
-        return new Rectangle(x, y, width-ZombieSurvivalGame.ZOMBIE_TOLERANCE, height-ZombieSurvivalGame.ZOMBIE_TOLERANCE);
+    public Rectangle getRect(boolean real) {
+        if(real) {
+            return new Rectangle((int)x, (int)y, width, height);
+        }
+        else {
+            return new Rectangle((int)x, (int)y, width-ZombieSurvivalGame.ZOMBIE_TOLERANCE, height-ZombieSurvivalGame.ZOMBIE_TOLERANCE);
+        }
+    }
+
+    /**
+     * Calculates angle to player
+     * @param playerX 
+     * @param playerY
+     */
+    private void calcAngle(double playerX, double playerY) {
+        angle = Math.atan2((playerY-y), (playerX-x));
+    }
+
+    /**
+     * Updates the angle of the zombie. Does not update if zombie is too close to player
+     * @param playerX
+     * @param playerY
+     */
+    public void updateAngle(double playerX, double playerY) {
+        if(y > 400) {
+            return;
+        }
+        calcAngle(playerX, playerY);
     }
     
 }

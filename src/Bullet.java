@@ -2,9 +2,9 @@ import java.awt.*;
 
 
 public class Bullet extends Sprite {
-    private int speed;
+    private double speed;
     
-    public Bullet(int x, int y) {
+    public Bullet(double x, double y) {
         this.x = x;
         this.y = y;
         speed = 5;
@@ -15,7 +15,7 @@ public class Bullet extends Sprite {
     @Override
     public void draw(Graphics2D g) {
         g.setColor(Color.ORANGE);
-        g.fillOval(x, y, width, height);
+        g.fillOval((int)x, (int)y, width, height);
     }
 
     public void move() {
@@ -32,6 +32,6 @@ public class Bullet extends Sprite {
     }
 
     public Rectangle getRect() {
-        return new Rectangle(x, y, width, height);
+        return new Rectangle((int)x, (int)y, width, height);
     }
 }

@@ -1,18 +1,19 @@
-## Getting Started
+# Shoot Some Zombies!
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+This is a simple game in Java, where you need to move around and shoot the incoming zombies.
+As you shoot, you're gun get's progressively better:
 
-## Folder Structure
+Pistol (0) -> Shotgun (10) -> AK-47 (20) -> Machine Gun (50)
 
-The workspace contains two folders by default, where:
+The main difference is the fire rate (milliseconds between shots). These constants are defined in `ZombieSurvivalGame.java`
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Controls
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+- Left arrow: Move left
+- Right arrow: Move right
+- Space: Shoot
+- E: Switch hands
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+Zombies are going to move towards you, hence you will need to switch hands to shoot them
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+# Good luck, and protect your brain!

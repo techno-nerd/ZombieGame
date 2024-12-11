@@ -1,26 +1,38 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 
 public class Player extends Sprite {
     private Gun gun;
     private int score;
-    private int speed;
+    private double speed;
+    private BufferedImage image;
 
     public Player() {
         score = 0;
-        speed = 5;
+        speed = 1.5;
         this.x = 350;
         this.y = 450;
         this.width = 50;
         this.height = 50;
         this.gun = new Gun(ZombieSurvivalGame.PISTOL_FIRERATE, x, y);
+
+        try {
+            image = ImageIO.read(new File("media/Player.png"));
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.RED);
-        g.fillRect(x, y, width, height);
+        g.drawImage(image, (int)x, (int)y, width, height, null);
         gun.draw(g);
     }
 
@@ -41,21 +53,33 @@ public class Player extends Sprite {
         return gun.shoot();
     }
 
-    public void updateScore(int points) {
+    public void updateScore(int points) { //Is there a better way to do this? --> Use enum or boolean
         score += points;
+        if(score < 20 && score >= 10) {
+            gun = new Gun(ZombieSurvivalGame.SHOTGUN_FIRERATE, x, y, gun.getHand(), width);
+        }
+        else if(score < 50 && score >= 20) {
+            gun = new Gun(ZombieSurvivalGame.AK47_FIRERATE, x, y, gun.getHand(), width);
+        }
+        else if(score >= 50) {
+            gun = new Gun(ZombieSurvivalGame.MACHINE_GUN_FIRERATE, x, y, gun.getHand(), width);
+        }
     }
 
+    public void switchHands() {
+        gun.switchHand(width);
+    }
 
     //Getters
-    public int getX() {
+    public double getX() {
         return this.x;
     }
 
-    public int getY() {
+    public double getY() {
         return this.y;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return this.speed;
     }
 
@@ -68,7 +92,7 @@ public class Player extends Sprite {
     }
 
     public Rectangle getRect() {
-        return new Rectangle(x, y, width, height);
+        return new Rectangle((int)x, (int)y, width, height);
     }
 
 

@@ -2,8 +2,8 @@ import java.awt.*;
 
 
 public abstract class Sprite {
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
     protected int width;
     protected int height;
 
