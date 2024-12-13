@@ -22,7 +22,7 @@ public class Gun extends Sprite {
     
     /**
      * Which hand the player has the gun in
-     * Defaults to left at the start of the game
+     * Defaults to <code>Left</code> at the start of the game
      */
     private Hand hand;
     private BufferedImage image;

@@ -1,7 +1,7 @@
 # Shoot Some Zombies!
 
 This is a simple game in Java, where you need to move around and shoot the incoming zombies.
-As you shoot, you're gun get's progressively better:
+As you shoot, you're gun gets progressively better (and you get slower because the gun is heavier):
 
 Pistol (0) -> Shotgun (10) -> AK-47 (20) -> Machine Gun (50)
 
@@ -13,7 +13,15 @@ The main difference is the fire rate (milliseconds between shots). These constan
 - Right arrow: Move right
 - Space: Shoot
 - E: Switch hands
+- Q: Special move - Eradicate all zombies (does not give you points!)
 
 Zombies are going to move towards you, hence you will need to switch hands to shoot them
+
+
+## Tips and Tricks
+
+- You can hold down the Arrow keys but not the Space bar (get quick fingers and keep clicking Space!)
+- Don't get cornered
+- Save your special move for when you get slower (or don't?)
 
 # Good luck, and protect your brain!

@@ -2,12 +2,22 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
+
+enum WeaponType {
+    Pistol,
+    Shotgun,
+    AK47,
+    MachineGun
+}
 
 
 public class Player extends Sprite {
+    public static final double SPEED_REDUCTION = 0.3;
+
+
     private Gun gun;
+    private WeaponType weaponType;
     private int score;
     private double speed;
     private BufferedImage image;
@@ -19,6 +29,7 @@ public class Player extends Sprite {
         this.y = 450;
         this.width = 50;
         this.height = 50;
+        this.weaponType = WeaponType.Pistol;
         this.gun = new Gun(ZombieSurvivalGame.PISTOL_FIRERATE, x, y);
 
         try {
@@ -53,16 +64,23 @@ public class Player extends Sprite {
         return gun.shoot();
     }
 
-    public void updateScore(int points) { //Is there a better way to do this? --> Use enum or boolean
+    public void updateScore(int points) {
         score += points;
-        if(score < 20 && score >= 10) {
+        
+        if(score < 20 && score >= 10 && weaponType != WeaponType.Shotgun) {
             gun = new Gun(ZombieSurvivalGame.SHOTGUN_FIRERATE, x, y, gun.getHand(), width);
+            weaponType = WeaponType.Shotgun;
+            speed -= SPEED_REDUCTION;
         }
-        else if(score < 50 && score >= 20) {
+        else if(score < 50 && score >= 20 && weaponType != WeaponType.AK47) {
             gun = new Gun(ZombieSurvivalGame.AK47_FIRERATE, x, y, gun.getHand(), width);
+            weaponType = WeaponType.AK47;
+            speed -= SPEED_REDUCTION;
         }
-        else if(score >= 50) {
+        else if(score >= 50 && weaponType != WeaponType.MachineGun) {
             gun = new Gun(ZombieSurvivalGame.MACHINE_GUN_FIRERATE, x, y, gun.getHand(), width);
+            weaponType = WeaponType.MachineGun;
+            speed -= SPEED_REDUCTION;
         }
     }
 

@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+
 enum GameState {
     Welcome,
     Playing,
@@ -22,13 +23,16 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     
     public static final int ZOMBIE_TOLERANCE = 5;
     public static final int NUM_ZOMBIES = 5;
-    /*
-     * The chance of the zombie adjusting it's angle every time the game is updated
+    /**
+     * The chance of a zombie adjusting it's angle every time the game is updated
      */
     public static final double ADJUST_ANGLE_PROBA = 0.01;
 
+    public static final int MAX_SPECIAL_MOVES = 3;
 
     private Player player;
+    private int numSpecialMoves;
+
     private ArrayList<Zombie> zombies;
     private ArrayList<Bullet> bullets;
     private long timeSinceUpdate;
@@ -38,7 +42,10 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     public ZombieSurvivalGame() {
         zombies = new ArrayList<Zombie>();
         bullets = new ArrayList<Bullet>();
+
         player = new Player();
+        numSpecialMoves = 0;
+
         timeSinceUpdate = 0;
         setFocusable(true);
         addKeyListener(this);
@@ -52,7 +59,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
                     case Welcome: {
                         repaint();
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(3500);
                         } 
                         catch (InterruptedException e) {
                             e.printStackTrace();
@@ -96,7 +103,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
             }
                 
             case Playing: {
-                g2D.drawString(""+player.getScore(), GAME_SCREEN_WIDTH-50, 50);
+                drawScore(g2D);
                 drawSprites(g2D);
                 break;
             }
@@ -113,8 +120,14 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     private void drawWelcome(Graphics2D g2d) {
         g2d.drawString("Welcome! You will be shooting some zombies today", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 - 50);
         g2d.drawString("Space to shoot, Arrow Keys to navigate and E to switch the gun from left to right hand", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2);
-        g2d.drawString("Your gun will upgrade as you score points. Check the README file for details", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 + 50);
+        g2d.drawString("Q to kill all zombies (you can only use this 3 times!)", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 + 50);
+        g2d.drawString("Your gun will upgrade as you score points. Check the README file for details", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 + 100);
 
+    }
+
+    private void drawScore(Graphics2D g2D) {
+        g2D.drawString("Score: "+player.getScore(), GAME_SCREEN_WIDTH-150, 50);
+        g2D.drawString("Special Moves: "+(MAX_SPECIAL_MOVES-numSpecialMoves), GAME_SCREEN_WIDTH-150, 100);
     }
 
     private void drawSprites(Graphics2D g2D) {
@@ -142,7 +155,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
      * @return -1 if zombie is touching player | Else, it returns the score
      */
     private int updateGame() {
-        handleKeys();
+        handleMovement();
 
         int zResult = handleZombies();
         if(zResult == -1) {
@@ -153,7 +166,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
 
     }
 
-    public boolean checkBulletHit(Bullet bullet, ArrayList<Zombie> zombies) {
+    private boolean checkBulletHit(Bullet bullet) {
         Rectangle bulletRect = bullet.getRect();
         for(int i=0; i<zombies.size(); i++) {
             Zombie zombie = zombies.get(i);
@@ -165,7 +178,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         return false;
     }
 
-    private void handleKeys() {
+    private void handleMovement() {
         for(int i=0; i<keysPressed.size(); i++) {
             int keyCode = keysPressed.get(i);
             if (keyCode == KeyEvent.VK_LEFT) {
@@ -179,18 +192,6 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
                     player.move(1);
                 }
             } 
-            
-            if (keyCode == KeyEvent.VK_SPACE) {
-                Bullet bullet = player.shoot();
-                if(bullet != null) {
-                    bullets.add(bullet);
-                }
-            }
-    
-            if(keyCode == KeyEvent.VK_E) {
-                player.switchHands();
-            }
-
         }
     }
 
@@ -243,7 +244,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         while(b<bullets.size()) {
             Bullet bullet = bullets.get(b);
 
-            if(checkBulletHit(bullet, zombies)) {
+            if(checkBulletHit(bullet)) {
                 score++;
                 bullets.remove(b);
                 continue;
@@ -262,14 +263,40 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         return score;
     }
 
+    /**
+     * Uses the Special Move of eradicating all zombies
+     */
+    private void useSpecialMove() {
+        if(numSpecialMoves >= MAX_SPECIAL_MOVES) {
+            return;
+        }
+        else {
+            zombies.clear();
+            numSpecialMoves++;
+        }
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if(keysPressed.contains(keyCode)) {
-            return;
+        if((keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT)) {
+            keysPressed.add(keyCode);
         }
-        keysPressed.add(keyCode);
+
+        if(keyCode == KeyEvent.VK_E) {
+            player.switchHands();
+        }
+
+        if(keyCode == KeyEvent.VK_SPACE) {
+            Bullet bullet = player.shoot();
+            if(bullet != null) {
+                bullets.add(bullet);
+            }
+        }
+
+        if(keyCode == KeyEvent.VK_Q) {
+            useSpecialMove();
+        }
     }
 
     @Override

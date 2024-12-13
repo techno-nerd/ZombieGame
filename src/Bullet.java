@@ -14,7 +14,7 @@ public class Bullet extends Sprite {
 
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.ORANGE);
+        g.setColor(Color.RED);
         g.fillOval((int)x, (int)y, width, height);
     }
 
