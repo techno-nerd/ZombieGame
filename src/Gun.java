@@ -2,17 +2,18 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
-enum Hand {
-    Left,
-    Right,
-}
 
 /**
  * Defines the gun with which the player shoots
  */
+enum Hand {
+    Left,
+    Right
+}
+
+
 public class Gun extends Sprite {
     /**
      * Time in milliseconds between two shots
@@ -68,7 +69,7 @@ public class Gun extends Sprite {
     }
     /**
      * 
-     * @return Bullet if time has passed | null otherwise
+     * @return Bullet if <code>fireRate</code> time has passed | null otherwise
      */
     public Bullet shoot() {
         if(System.currentTimeMillis() - timeSinceShot >= fireRate) {

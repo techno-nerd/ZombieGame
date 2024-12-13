@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+
 enum WeaponType {
     Pistol,
     Shotgun,
@@ -22,6 +23,7 @@ public class Player extends Sprite {
     private double speed;
     private BufferedImage image;
 
+    
     public Player() {
         score = 0;
         speed = 1.5;

@@ -23,11 +23,10 @@ public class Bullet extends Sprite {
     }
 
     /**
-     * 
-     * @param screenHeight Height in pixels of the frame
+     * Assumes that top left corner = (0, 0)
      * @return true if the bullet is within the frame; false otherwise
      */
-    public boolean validatePosition(int screenHeight) {
+    public boolean validatePosition() {
         return(y > -height);
     }
 

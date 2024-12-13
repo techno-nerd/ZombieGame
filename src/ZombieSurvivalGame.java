@@ -16,9 +16,9 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     public static final int GAME_SCREEN_WIDTH = 800;
     public static final int GAME_SCREEN_HEIGHT = 600;
 
-    public static final double PISTOL_FIRERATE = 200;
-    public static final double SHOTGUN_FIRERATE = 160;
-    public static final double AK47_FIRERATE = 100;
+    public static final double PISTOL_FIRERATE = 400;
+    public static final double SHOTGUN_FIRERATE = 300;
+    public static final double AK47_FIRERATE = 150;
     public static final double MACHINE_GUN_FIRERATE = 50;
     
     public static final int ZOMBIE_TOLERANCE = 5;
@@ -59,7 +59,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
                     case Welcome: {
                         repaint();
                         try {
-                            Thread.sleep(3500);
+                            Thread.sleep(5000);
                         } 
                         catch (InterruptedException e) {
                             e.printStackTrace();
@@ -251,7 +251,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
             }
             
             //Ensures bullets that are no longer visible are deleted
-            if(bullet.validatePosition(GAME_SCREEN_HEIGHT)) {
+            if(bullet.validatePosition()) {
                 bullet.move();
                 b++;
             }

@@ -79,12 +79,9 @@ public class Zombie extends Sprite {
         angle = Math.atan2((playerY-y), (playerX-x));
     }
 
-    /**
-     * Updates the angle of the zombie. Does not update if zombie is too close to player
-     * @param playerX
-     * @param playerY
-     */
+    
     public void updateAngle(double playerX, double playerY) {
+        //Does not update if zombie is below y=400
         if(y > 400) {
             return;
         }
