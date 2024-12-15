@@ -14,6 +14,9 @@ enum WeaponType {
 
 
 public class Player extends Sprite {
+    /**
+     * How much is subtracted from speed when the gun is upgraded
+     */
     public static final double SPEED_REDUCTION = 0.3;
 
 

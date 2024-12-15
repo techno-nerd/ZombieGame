@@ -27,8 +27,8 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
      * The chance of a zombie adjusting it's angle every time the game is updated
      */
     public static final double ADJUST_ANGLE_PROBA = 0.01;
-
     public static final int MAX_SPECIAL_MOVES = 3;
+
 
     private Player player;
     private int numSpecialMoves;
@@ -38,6 +38,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     private long timeSinceUpdate;
     private GameState gameState;
     private ArrayList<Integer> keysPressed = new ArrayList<Integer>();
+
 
     public ZombieSurvivalGame() {
         zombies = new ArrayList<Zombie>();
@@ -51,6 +52,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         addKeyListener(this);
         gameState = GameState.Welcome;
     }
+    
     
     public void startGame() {
         while (true) {

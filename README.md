@@ -13,7 +13,7 @@ The main difference is the fire rate (milliseconds between shots). These constan
 - Right arrow: Move right
 - Space: Shoot
 - E: Switch hands
-- Q: Special move - Eradicate all zombies (does not give you points!)
+- Q: Special move - Eradicate all zombies (does not give you points!). You can only use this 3 times!
 
 Zombies are going to move towards you, hence you will need to switch hands to shoot them
 

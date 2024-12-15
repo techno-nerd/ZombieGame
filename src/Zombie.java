@@ -14,6 +14,7 @@ public class Zombie extends Sprite {
     private double angle;
     private BufferedImage image;
 
+
     public Zombie(int width, int height) {
         this.x = (int)(Math.random()*width);
         this.y = height;
@@ -33,6 +34,7 @@ public class Zombie extends Sprite {
         calcAngle(playerX, playerY);
     }
 
+    
     @Override
     public void draw(Graphics2D g) {
         g.drawImage(image, (int)x, (int)y, width, height, null);
