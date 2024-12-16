@@ -17,6 +17,7 @@ The main difference is the fire rate (milliseconds between shots). These constan
 
 Zombies are going to move towards you, hence you will need to switch hands to shoot them
 
+For a quick demo, watch this [video](https://cloud-8jevx070o-hack-club-bot.vercel.app/0zombie_game_demo.mp4)
 
 ## Tips and Tricks
 
