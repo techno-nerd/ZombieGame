@@ -19,6 +19,8 @@ Zombies are going to move towards you, hence you will need to switch hands to sh
 
 For a quick demo, watch this [video](https://cloud-8jevx070o-hack-club-bot.vercel.app/0zombie_game_demo.mp4)
 
+To run the game, run the `ZombieGameRunner.java` file.
+
 ## Tips and Tricks
 
 - You can hold down the Arrow keys but not the Space bar (get quick fingers and keep clicking Space!)
