@@ -35,7 +35,7 @@ public class Player extends Sprite {
         this.width = 50;
         this.height = 50;
         this.weaponType = WeaponType.Pistol;
-        this.gun = new Gun(ZombieSurvivalGame.PISTOL_FIRERATE, x, y);
+        this.gun = new Gun(Gun.PISTOL_FIRERATE, x, y);
 
         try {
             image = ImageIO.read(new File("media/Player.png"));
@@ -69,21 +69,26 @@ public class Player extends Sprite {
         return gun.shoot();
     }
 
+    /**
+     * Adds <code>points</code> to the player's <code>score</code>
+     * If the threshold for next gun is crossed, then player gets the new gun
+     * @param points Number of points to be added
+     */
     public void updateScore(int points) {
         score += points;
         
         if(score < 20 && score >= 10 && weaponType != WeaponType.Shotgun) {
-            gun = new Gun(ZombieSurvivalGame.SHOTGUN_FIRERATE, x, y, gun.getHand(), width);
+            gun = new Gun(Gun.SHOTGUN_FIRERATE, x, y, gun.getHand(), width);
             weaponType = WeaponType.Shotgun;
             speed -= SPEED_REDUCTION;
         }
         else if(score < 50 && score >= 20 && weaponType != WeaponType.AK47) {
-            gun = new Gun(ZombieSurvivalGame.AK47_FIRERATE, x, y, gun.getHand(), width);
+            gun = new Gun(Gun.AK47_FIRERATE, x, y, gun.getHand(), width);
             weaponType = WeaponType.AK47;
             speed -= SPEED_REDUCTION;
         }
         else if(score >= 50 && weaponType != WeaponType.MachineGun) {
-            gun = new Gun(ZombieSurvivalGame.MACHINE_GUN_FIRERATE, x, y, gun.getHand(), width);
+            gun = new Gun(Gun.MACHINE_GUN_FIRERATE, x, y, gun.getHand(), width);
             weaponType = WeaponType.MachineGun;
             speed -= SPEED_REDUCTION;
         }

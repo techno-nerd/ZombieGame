@@ -6,6 +6,12 @@ import javax.imageio.ImageIO;
 
 
 public class Zombie extends Sprite {
+    /**
+     * Pixels subtracted from height and width of <code>zombie.getRect(false)</code>
+     */
+    public static final int ZOMBIE_TOLERANCE = 5;
+
+
     private double speed;
 
     /**
@@ -60,15 +66,14 @@ public class Zombie extends Sprite {
     }
     
     /**
-     * @param real Whether the <code>ZombieSurvivalGame.ZOMBIE_TOLERANCE</code> should be subtracted or not. <code>true</code> means not subtracted, <code>false</code> means subtracted 
-     * @return Rectangle object with slightly smaller width and height (defined in <code>Constants.ZOMBIE_TOLERANCE</code>)
+     * @param real Whether the <code>ZOMBIE_TOLERANCE</code> should be subtracted or not. <code>true</code> means not subtracted, <code>false</code> means subtracted 
      */
     public Rectangle getRect(boolean real) {
         if(real) {
             return new Rectangle((int)x, (int)y, width, height);
         }
         else {
-            return new Rectangle((int)x, (int)y, width-ZombieSurvivalGame.ZOMBIE_TOLERANCE, height-ZombieSurvivalGame.ZOMBIE_TOLERANCE);
+            return new Rectangle((int)x, (int)y, width-ZOMBIE_TOLERANCE, height-ZOMBIE_TOLERANCE);
         }
     }
 

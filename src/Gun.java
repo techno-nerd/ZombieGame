@@ -15,6 +15,12 @@ enum Hand {
 
 
 public class Gun extends Sprite {
+    public static final double PISTOL_FIRERATE = 400;
+    public static final double SHOTGUN_FIRERATE = 300;
+    public static final double AK47_FIRERATE = 150;
+    public static final double MACHINE_GUN_FIRERATE = 50;
+
+
     /**
      * Time in milliseconds between two shots
      */
@@ -38,19 +44,19 @@ public class Gun extends Sprite {
         hand = Hand.Left;
 
         try {
-            if(fireRate == ZombieSurvivalGame.PISTOL_FIRERATE) {
+            if(fireRate == PISTOL_FIRERATE) {
                 image = ImageIO.read(new File("media/Pistol.png"));
             }
 
-            if(fireRate == ZombieSurvivalGame.SHOTGUN_FIRERATE) {
+            if(fireRate == SHOTGUN_FIRERATE) {
                 image = ImageIO.read(new File("media/Shotgun.png"));
             }
 
-            if(fireRate == ZombieSurvivalGame.AK47_FIRERATE) {
+            if(fireRate == AK47_FIRERATE) {
                 image = ImageIO.read(new File("media/AK47.png"));
             }
 
-            if(fireRate == ZombieSurvivalGame.MACHINE_GUN_FIRERATE) {
+            if(fireRate == MACHINE_GUN_FIRERATE) {
                 image = ImageIO.read(new File("media/MachineGun.png"));
             }
         }
@@ -67,6 +73,8 @@ public class Gun extends Sprite {
             this.switchHand(playerWidth);
         }
     }
+
+    
     /**
      * 
      * @return Bullet if <code>fireRate</code> time has passed | null otherwise

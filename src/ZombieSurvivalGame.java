@@ -15,13 +15,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     public static final int UPDATE_FREQ = 16;
     public static final int GAME_SCREEN_WIDTH = 800;
     public static final int GAME_SCREEN_HEIGHT = 600;
-
-    public static final double PISTOL_FIRERATE = 400;
-    public static final double SHOTGUN_FIRERATE = 300;
-    public static final double AK47_FIRERATE = 150;
-    public static final double MACHINE_GUN_FIRERATE = 50;
     
-    public static final int ZOMBIE_TOLERANCE = 5;
     public static final int NUM_ZOMBIES = 5;
     /**
      * The chance of a zombie adjusting it's angle every time the game is updated
@@ -50,6 +44,9 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         timeSinceUpdate = 0;
         setFocusable(true);
         addKeyListener(this);
+
+        setBackground(Color.DARK_GRAY);
+
         gameState = GameState.Welcome;
     }
     
@@ -120,6 +117,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     }
 
     private void drawWelcome(Graphics2D g2d) {
+        g2d.setColor(Color.WHITE);
         g2d.drawString("Welcome! You will be shooting some zombies today", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 - 50);
         g2d.drawString("Space to shoot, Arrow Keys to navigate and E to switch the gun from left to right hand", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2);
         g2d.drawString("Q to kill all zombies (you can only use this 3 times!)", GAME_SCREEN_WIDTH/2 - 250, GAME_SCREEN_HEIGHT/2 + 50);
@@ -128,6 +126,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     }
 
     private void drawScore(Graphics2D g2D) {
+        g2D.setColor(Color.WHITE);
         g2D.drawString("Score: "+player.getScore(), GAME_SCREEN_WIDTH-150, 50);
         g2D.drawString("Special Moves: "+(MAX_SPECIAL_MOVES-numSpecialMoves), GAME_SCREEN_WIDTH-150, 100);
     }
@@ -148,7 +147,7 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
         g2d.setFont(new Font("Monospaced", Font.PLAIN, 64));
         g2d.setColor(Color.RED);
         g2d.drawString("You died!", GAME_SCREEN_WIDTH/2 - 300, GAME_SCREEN_HEIGHT/2 - 50);
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.WHITE);
         g2d.drawString(String.format("Your score: %d", player.getScore()), GAME_SCREEN_WIDTH/2 - 300, GAME_SCREEN_HEIGHT/2 + 50);
     }
 
