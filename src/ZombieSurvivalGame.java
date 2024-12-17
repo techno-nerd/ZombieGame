@@ -241,8 +241,8 @@ public class ZombieSurvivalGame extends JPanel implements KeyListener {
     private int handleBullets() {
         int score = 0;
         //If the bullet is touching a zombie, 
-        int b=0;
-        while(b<bullets.size()) {
+        int b = 0;
+        while(b < bullets.size()) {
             Bullet bullet = bullets.get(b);
 
             if(checkBulletHit(bullet)) {

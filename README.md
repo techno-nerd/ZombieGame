@@ -27,4 +27,11 @@ To run the game, run the `ZombieGameRunner.java` file.
 - Don't get cornered
 - Save your special move for when you get slower (or don't?)
 
+## Setting up the Game
+
+Download the `.zip` file.
+
+If you are using VS Code, install the `Extension Pack for Java` and then run the `ZombieGameRunner.java` file using the run button in the top-right corner.
+
+
 # Good luck, and protect your brain!
